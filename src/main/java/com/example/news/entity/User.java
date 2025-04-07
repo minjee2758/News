@@ -1,4 +1,4 @@
-package com.example.news.user;
+package com.example.news.entity;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
