@@ -1,5 +1,6 @@
 package com.example.news.controller;
 
+import com.example.news.dto.userDto.UpdatePwResponseDto;
 import com.example.news.dto.userDto.UserRequestDto;
 import com.example.news.dto.userDto.UserResponseDto;
 import com.example.news.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/news")
 public class UserController {
 
     private final UserService userService;
@@ -36,9 +38,15 @@ public class UserController {
         return ResponseEntity.ok("로그아웃되었습니다");
     }
 
-    @PutMapping("/")
-    public ResponseEntity<UserResponseDto> updatePw(@Valid @RequestBody UserRequestDto dto) {
+    @PutMapping
+    public ResponseEntity<Boolean> updatePw(@Valid @RequestBody UpdatePwResponseDto dto) {
+        boolean isSame = userService.updatePw(dto.getEmail(), dto.getPassword(), dto.getNewPassword());
 
+        if(isSame){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

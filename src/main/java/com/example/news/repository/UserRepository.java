@@ -6,10 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findUserByEmail(String email);
+    Optional<User> findUserByEmail(String email);
+
+    default User findUserByEmailOrElseThrow(String email) {
+        return findUserByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다: " + email));
+    }
 }
