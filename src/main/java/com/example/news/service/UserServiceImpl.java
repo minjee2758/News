@@ -49,9 +49,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void logout(String password) {
+    public UserResponseDto logout(String email, String password) {
+        User user = userRepository.findUserByEmailOrElseThrow(email);
         if (!passwordEncoder.matches(password, passwordEncoder.encode(password))) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못되었습니다");
+        } else {
+            return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
         }
     }
 

@@ -21,32 +21,36 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody UserRequestDto dto) {
+    public ResponseEntity<CommonResponse<UserResponseDto>> signUp(@Valid @RequestBody UserRequestDto dto) {
 
         UserResponseDto userResponseDto = userService.signUp(dto.getEmail(),dto.getUsername(),dto.getMbti(),dto.getPassword());
 
-        return new ResponseEntity<>(userResponseDto,HttpStatus.CREATED);
+        return ResponseEntity.status(SuccessCode.SIGNUP_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userResponseDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto) {
         UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
-        return ResponseEntity.status(SuccessCode.SIGNUP_SUCCESS.getHttpStatus())
-                .body(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userResponseDto));
+        return ResponseEntity.status(SuccessCode.LOGIN_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userResponseDto));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@Valid @RequestBody UserRequestDto dto) {
-        userService.logout(dto.getPassword());
-        return ResponseEntity.ok("로그아웃되었습니다");
+    public ResponseEntity<CommonResponse<String>> logout(@Valid @RequestBody UserRequestDto dto) {
+        UserResponseDto userResponseDto = userService.logout(dto.getEmail(), dto.getPassword());
+        System.out.println(userResponseDto.getUsername()+"님 로그아웃");
+        return ResponseEntity.status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS, "success"));
     }
 
-    @PutMapping
-    public ResponseEntity<Boolean> updatePw(@Valid @RequestBody UpdatePwResponseDto dto) {
+    @PatchMapping
+    public ResponseEntity<CommonResponse<Boolean>> updatePw(@Valid @RequestBody UpdatePwResponseDto dto) {
         boolean isSame = userService.updatePw(dto.getEmail(), dto.getPassword(), dto.getNewPassword());
 
         if(isSame){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.status(SuccessCode.UPDATE_PW_SUCCESS.getHttpStatus())
+                    .body(CommonResponse.of(SuccessCode.UPDATE_PW_SUCCESS, true));
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

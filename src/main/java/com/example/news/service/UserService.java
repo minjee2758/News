@@ -9,7 +9,7 @@ public interface UserService {
 
     UserResponseDto login(String email, String password);
 
-    void logout(String password);
+    UserResponseDto logout(String email, String password);
 
     boolean updatePw(String email, String password, String newPassword);
 }
