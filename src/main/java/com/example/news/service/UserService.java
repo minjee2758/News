@@ -12,4 +12,6 @@ public interface UserService {
     UserResponseDto logout(String email, String password);
 
     boolean updatePw(String email, String password, String newPassword);
+
+    UserResponseDto findUserById(Long id);
 }

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
@@ -42,4 +43,5 @@ public class User extends BaseEntity {
         this.mbti = mbti;
         this.password = password;
     }
+
 }

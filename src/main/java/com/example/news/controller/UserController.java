@@ -56,4 +56,11 @@ public class UserController {
         }
     }
 
+    @GetMapping("/profile/{user_id}")
+    public ResponseEntity<CommonResponse<UserResponseDto>> findUserById(@PathVariable Long user_id) {
+        UserResponseDto userResponseDto = userService.findUserById(user_id);
+        return ResponseEntity.status(SuccessCode.FIND_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.FIND_SUCCESS, userResponseDto));
+    }
+
 }

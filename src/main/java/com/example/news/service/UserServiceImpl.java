@@ -73,4 +73,11 @@ public class UserServiceImpl implements UserService {
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기존 비밀번호 입력이 잘못되었습니다");
     }
+
+    @Override
+    public UserResponseDto findUserById(Long id) {
+        User user = userRepository.findUserByIdOrElseThrow(id);
+
+        return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
+    }
 }

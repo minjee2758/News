@@ -18,4 +18,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findUserByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다: " + email));
     }
+
+    Optional<User> findUserById(Long id);
+
+    default User findUserByIdOrElseThrow(Long id) {
+        return findUserById(id)
+                .orElseThrow(()->new NoSuchElementException("id" + id + "의 사용자를 찾을 수 없습니다"));
+    }
 }

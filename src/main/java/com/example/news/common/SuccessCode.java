@@ -13,6 +13,7 @@ public enum SuccessCode {
     LOGIN_SUCCESS(HttpStatus.OK, 201, "로그인 되었습니다"),
     LOGOUT_SUCCESS(HttpStatus.OK, 202, "로그아웃이 완료되었습니다"),
     UPDATE_PW_SUCCESS(HttpStatus.OK, 200, "비밀번호 수정이 완료되었습니다."),
+    FIND_SUCCESS(HttpStatus.OK, 204, "find가 실행되었습니다"),
     DELETE_SUCCESS(HttpStatus.OK, 200, "삭제가 완료되었습니다.");
 
     private final HttpStatus httpStatus;
