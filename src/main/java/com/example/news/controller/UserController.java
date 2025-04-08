@@ -1,5 +1,7 @@
 package com.example.news.controller;
 
+import com.example.news.common.CommonResponse;
+import com.example.news.common.SuccessCode;
 import com.example.news.dto.userDto.UpdatePwResponseDto;
 import com.example.news.dto.userDto.UserRequestDto;
 import com.example.news.dto.userDto.UserResponseDto;
@@ -27,9 +29,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody UserRequestDto dto) {
-        User user = userService.login(dto.getEmail(), dto.getPassword());
-        return ResponseEntity.ok(user.getUsername()+"님 로그인되었습니다");
+    public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto) {
+        UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
+        return ResponseEntity.status(SuccessCode.SIGNUP_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userResponseDto));
     }
 
     @PostMapping("/logout")

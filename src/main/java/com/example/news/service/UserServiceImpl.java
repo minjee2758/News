@@ -38,12 +38,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User login(String email, String password) {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다"));
-
+    public UserResponseDto login(String email, String password) {
+        User user = userRepository.findUserByEmailOrElseThrow(email);
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+            return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
         }
@@ -61,10 +59,10 @@ public class UserServiceImpl implements UserService {
     public boolean updatePw(String email, String password, String newPassword) {
         User user = userRepository.findUserByEmailOrElseThrow(email);
 
-        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기존과 동일한 비밀번호는 입력할 수 없습니다.");
-        }
         if (passwordEncoder.matches(password, user.getPassword())) {
+            if (passwordEncoder.matches(newPassword, user.getPassword())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기존과 동일한 비밀번호는 입력할 수 없습니다.");
+            }
             String encodedPassword = passwordEncoder.encode(newPassword);
             user.setPassword(encodedPassword);
             userRepository.save(user);

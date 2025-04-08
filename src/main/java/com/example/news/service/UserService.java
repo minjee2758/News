@@ -7,7 +7,7 @@ public interface UserService {
 
     UserResponseDto signUp(String username, String email, String mbti, String password);
 
-    User login(String email, String password);
+    UserResponseDto login(String email, String password);
 
     void logout(String password);
 
