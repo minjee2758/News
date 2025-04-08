@@ -33,4 +33,22 @@ public class UserServiceImpl implements UserService {
 
         return new UserResponseDto(signUser.getEmail(),signUser.getUsername(),signUser.getMbti());
     }
+
+    @Override
+    public User login(String email, String password) {
+        Optional<User> user = Optional.ofNullable(userRepository.findUserByEmail(email));
+        if (passwordEncoder.matches(password, user.get().getPassword())) {
+            return user.get();
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
+        }
+    }
+
+    @Override
+    public void logout(String password) {
+        if (!passwordEncoder.matches(password, passwordEncoder.encode(password))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못되었습니다");
+        }
+    }
 }
