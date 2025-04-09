@@ -7,11 +7,14 @@ import com.example.news.dto.userDto.UserRequestDto;
 import com.example.news.dto.userDto.UserResponseDto;
 import com.example.news.entity.User;
 import com.example.news.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,18 +33,30 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto) {
+    public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto,
+                                                                 HttpServletRequest request) {
         UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
+
+        HttpSession session = request.getSession();
+        session.setAttribute("user", userResponseDto);
+
         return ResponseEntity.status(SuccessCode.LOGIN_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userResponseDto));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<String>> logout(@Valid @RequestBody UserRequestDto dto) {
+    public ResponseEntity<CommonResponse<String>> logout(@Valid @RequestBody UserRequestDto dto, HttpServletRequest request) {
         UserResponseDto userResponseDto = userService.logout(dto.getEmail(), dto.getPassword());
         System.out.println(userResponseDto.getUsername()+"님 로그아웃");
-        return ResponseEntity.status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus())
-                .body(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS, "success"));
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+            return ResponseEntity.status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus())
+                    .body(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS, "success"));
+        } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
     }
 
     @PatchMapping
