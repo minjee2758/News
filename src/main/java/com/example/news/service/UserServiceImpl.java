@@ -77,4 +77,22 @@ public class UserServiceImpl implements UserService {
 
         return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
     }
+
+
+
+    @Override
+    public void withdraw(String email, String password) {
+        User user = userRepository.findUserByEmailOrElseThrow(email);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+
+
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원정보가 일치하지 않습니다. 이메일이나 비밀번호를 확인하세요");
+        }
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmailOrElseThrow(email);
+    }
 }

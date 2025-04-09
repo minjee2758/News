@@ -14,4 +14,8 @@ public interface UserService {
     boolean updatePw(String email, String password, String newPassword);
 
     UserResponseDto findUserById(Long id);
+
+    void withdraw(String email, String password);
+
+    User findUserByEmail(String email);
 }

@@ -36,9 +36,10 @@ public class UserController {
     public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto,
                                                                  HttpServletRequest request) {
         UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
+        User user = userService.findUserByEmail(dto.getEmail());
 
         HttpSession session = request.getSession();
-        session.setAttribute("user", userResponseDto);
+        session.setAttribute("loginUser", user);
 
         return ResponseEntity.status(SuccessCode.LOGIN_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userResponseDto));
@@ -77,5 +78,11 @@ public class UserController {
         return ResponseEntity.status(SuccessCode.FIND_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.FIND_SUCCESS, userResponseDto));
     }
+
+//    @PatchMapping("/withdraw")
+//    public ResponseEntity<CommonResponse<String>> withdraw(@Valid @RequestBody UserRequestDto dto) {
+//        userService.withdraw(dto.getEmail(), dto.getPassword());
+//
+//    }
 
 }
