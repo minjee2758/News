@@ -3,7 +3,10 @@ package com.example.news.controller;
 import com.example.news.common.ApiResponse;
 import com.example.news.dto.boardDto.BoardRequestDto;
 import com.example.news.dto.boardDto.BoardResponseDto;
+import com.example.news.entity.User;
 import com.example.news.service.BoardService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,9 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<BoardResponseDto>> createBoard(
-            @RequestParam Long userId,
-            @RequestBody BoardRequestDto dto) {
-        BoardResponseDto response = boardService.createBoard(dto.getTitle(), dto.getContent(), userId);
+            @RequestBody BoardRequestDto dto, HttpServletRequest request) {
+        User loginUser = (User) request.getSession().getAttribute("loginUser");
+        BoardResponseDto response = boardService.createBoard(dto.getTitle(), dto.getContent(), loginUser.getId());
         return ResponseEntity.status(201).body(ApiResponse.created(response, "게시글이 생성되었습니다"));
     }
 

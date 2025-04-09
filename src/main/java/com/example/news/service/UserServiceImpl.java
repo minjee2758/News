@@ -6,12 +6,15 @@ import com.example.news.entity.User;
 import com.example.news.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -36,10 +39,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto login(String email, String password) {
         User user = userRepository.findUserByEmailOrElseThrow(email);
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
+        if (user.getWithdrawTime() == null){
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
+            }
+        } else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
         }
     }
 
@@ -76,5 +83,26 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByIdOrElseThrow(id);
 
         return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
+    }
+
+
+
+    @Override
+    public void withdraw(String email, String password) {
+        log.info("service로 들어옴");
+        User user = userRepository.findUserByEmailOrElseThrow(email);
+        log.info("회원 찾음");
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            LocalDateTime withdrawTime = LocalDateTime.now();
+            user.setWithdrawTime(withdrawTime);
+            userRepository.save(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원정보가 일치하지 않습니다. 이메일이나 비밀번호를 확인하세요");
+        }
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmailOrElseThrow(email);
     }
 }
