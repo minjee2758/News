@@ -11,11 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/news")
@@ -79,10 +81,16 @@ public class UserController {
                 .body(CommonResponse.of(SuccessCode.FIND_SUCCESS, userResponseDto));
     }
 
-//    @PatchMapping("/withdraw")
-//    public ResponseEntity<CommonResponse<String>> withdraw(@Valid @RequestBody UserRequestDto dto) {
-//        userService.withdraw(dto.getEmail(), dto.getPassword());
-//
-//    }
+    @PatchMapping("/withdraw")
+    public ResponseEntity<CommonResponse<String>> withdraw(@Valid @RequestBody UserRequestDto dto, HttpServletRequest request) {
+        log.info("이메일&비번 정상 들어옴");
+        userService.withdraw(dto.getEmail(), dto.getPassword());
+
+        HttpSession session = request.getSession(false);
+        session.invalidate();
+
+        return ResponseEntity.status(SuccessCode.WITHDRAW_SUCCESS.getHttpStatus())
+                .body(CommonResponse.of(SuccessCode.WITHDRAW_SUCCESS, "회원 탈퇴 완료"));
+    }
 
 }
