@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
+// test {} 로 하면 에러 빨간 밑줄 사라짐
 tasks.named('test') {
     useJUnitPlatform()
 }
