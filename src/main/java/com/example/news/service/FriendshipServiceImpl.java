@@ -8,7 +8,11 @@ import com.example.news.entity.User;
 import com.example.news.repository.FriendshipRepository;
 import com.example.news.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,6 +42,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         }
 
         Friendship friendship = new Friendship(loginUser, receiver, status);
+
         friendshipRepository.save(friendship);
 
         return new FriendshipResponseDto(loginUser.getId(), receiver.getId(), status);
@@ -93,5 +98,33 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         // friendshipRepository에서 해당 friendship 삭제
         friendshipRepository.delete(friendship);
+    }
+
+    public List<FriendshipResponseDto> getSentFriendRequests(User loginUser) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        List<Friendship> sentRequests = friendshipRepository.findAllByRequesterAndStatus(loginUser, Status.REQUESTED, sort);
+
+        return sentRequests.stream()
+                .map(friendship -> new FriendshipResponseDto(
+                        friendship.getRequester().getId(),
+                        friendship.getReceiver().getId(),
+                        friendship.getStatus()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<FriendshipResponseDto> getReceivedFriendRequests(User loginUser) {
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        List<Friendship> receivedRequests = friendshipRepository.findAllByReceiverAndStatus(loginUser, Status.REQUESTED, sort);
+
+        return receivedRequests.stream()
+                .map(friendship -> new FriendshipResponseDto(
+                        friendship.getRequester().getId(),
+                        friendship.getReceiver().getId(),
+                        friendship.getStatus()
+                ))
+                .collect(Collectors.toList());
     }
 }

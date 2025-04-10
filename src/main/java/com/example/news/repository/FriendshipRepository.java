@@ -1,11 +1,14 @@
 package com.example.news.repository;
 
 
+import com.example.news.entity.Board;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
@@ -20,4 +23,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
         return findByRequesterAndReceiver(requester, loginUser).orElseThrow(() -> new EntityNotFoundException("삭제할 친구를 찾을 수 없습니다."));
     }
 
+    List<Friendship> findAllByReceiverAndStatus(User loginUser, Friendship.Status status , Sort sort);
+
+    List<Friendship> findAllByRequesterAndStatus(User loginUser, Friendship.Status status, Sort sort);
 }

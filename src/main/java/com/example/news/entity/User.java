@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "user")
@@ -33,6 +35,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
 //    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$", message = "비밀번호는 4~10자, 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
     private String password;
+
+    private LocalDateTime withdrawTime;
 
     public User() {
     }
