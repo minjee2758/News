@@ -6,7 +6,6 @@ import com.example.news.dto.userDto.UpdatePwResponseDto;
 import com.example.news.dto.userDto.UserRequestDto;
 import com.example.news.dto.userDto.UserResponseDto;
 import com.example.news.entity.User;
-import com.example.news.service.LoginService;
 import com.example.news.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
     private final UserService userService;
-    private final LoginService loginService;
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<UserResponseDto>> signUp(@Valid @RequestBody UserRequestDto dto) {
