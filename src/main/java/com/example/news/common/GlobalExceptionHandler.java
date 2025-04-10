@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         log.error("CustomException: {}", e.getMessage());
         Error errorCode = e.getError();
         CommonResponse response = CommonResponse.from(errorCode, e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getCode()));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getHttpStatus().value()));
     }
 
     //@RequestBody에서 바인딩된 DTO의 @Vaild에서 오류가 생겼을때

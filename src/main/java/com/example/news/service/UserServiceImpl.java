@@ -1,5 +1,7 @@
 package com.example.news.service;
 
+import com.example.news.common.CustomException;
+import com.example.news.common.Error;
 import com.example.news.config.PasswordEncoder;
 import com.example.news.dto.userDto.UserResponseDto;
 import com.example.news.entity.User;
@@ -36,19 +38,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    @Override
-//    public UserResponseDto login(String email, String password) {
-//        User user = userRepository.findUserByEmailOrElseThrow(email);
-//        if (user.getWithdrawTime() == null){
-//            if (passwordEncoder.matches(password, user.getPassword())) {
-//                return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
-//            } else {
-//                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
-//            }
-//        } else{
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
-//        }
-//    }
+    @Override
+    public UserResponseDto login(String email, String password) {
+        User user = userRepository.findUserByEmailOrElseThrow(email);
+        if (user.getWithdrawTime() == null){
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
+            } else {
+                throw new CustomException(Error.INVALID_INPUT_VALUE);
+            }
+        } else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
+        }
+    }
 
 
 
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto logout(String email, String password) {
         User user = userRepository.findUserByEmailOrElseThrow(email);
         if (!passwordEncoder.matches(password, passwordEncoder.encode(password))) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못되었습니다");
+            throw new CustomException(Error.INVALID_INPUT_VALUE, "비밀번호 입력이 잘못되었습니다");
         } else {
             return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
         }

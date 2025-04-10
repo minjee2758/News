@@ -39,8 +39,12 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto,
                                                                  HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
+
+        User user = userService.findUserByEmail(dto.getEmail());
+
         HttpSession session = request.getSession();
-        UserResponseDto userResponseDto = loginService.login(dto.getEmail(), dto.getPassword(), session);
+        session.setAttribute("loginUser", user);
 
         return ResponseEntity.status(SuccessCode.LOGIN_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userResponseDto));
