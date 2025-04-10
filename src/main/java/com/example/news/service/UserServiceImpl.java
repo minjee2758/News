@@ -36,19 +36,20 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public UserResponseDto login(String email, String password) {
-        User user = userRepository.findUserByEmailOrElseThrow(email);
-        if (user.getWithdrawTime() == null){
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
-            }
-        } else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
-        }
-    }
+//    @Override
+//    public UserResponseDto login(String email, String password) {
+//        User user = userRepository.findUserByEmailOrElseThrow(email);
+//        if (user.getWithdrawTime() == null){
+//            if (passwordEncoder.matches(password, user.getPassword())) {
+//                return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
+//            } else {
+//                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 잘못되었습니다");
+//            }
+//        } else{
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
+//        }
+//    }
+
 
 
     @Override
