@@ -45,11 +45,13 @@ public class UserServiceImpl implements UserService {
             if (passwordEncoder.matches(password, user.getPassword())) {
                 return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
             } else {
-                throw new CustomException(Error.INVALID_INPUT_VALUE);
+                throw new CustomException(Error.INVALID_LOGIN);
             }
         } else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, user.getUsername()+"님은 탈퇴된 회원입니다");
+            log.info("탈퇴된 회원 조회");
+            throw new CustomException(Error.INVALID_LOGIN);
         }
+
     }
 
 
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto logout(String email, String password) {
         User user = userRepository.findUserByEmailOrElseThrow(email);
         if (!passwordEncoder.matches(password, passwordEncoder.encode(password))) {
-            throw new CustomException(Error.INVALID_INPUT_VALUE, "비밀번호 입력이 잘못되었습니다");
+            throw new CustomException(Error.INVALID_INPUT_VALUE);
         } else {
             return new UserResponseDto(user.getEmail(), user.getUsername(), user.getMbti());
         }
@@ -71,14 +73,14 @@ public class UserServiceImpl implements UserService {
 
         if (passwordEncoder.matches(password, user.getPassword())) {
             if (passwordEncoder.matches(newPassword, user.getPassword())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기존과 동일한 비밀번호는 입력할 수 없습니다.");
+                throw new CustomException(Error.UNCHANGED_PASSWORD);
             }
             String encodedPassword = passwordEncoder.encode(newPassword);
             user.setPassword(encodedPassword);
             userRepository.save(user);
             return true;
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기존 비밀번호 입력이 잘못되었습니다");
+        throw new CustomException(Error.INVALID_PASSWORD_INPUT);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class UserServiceImpl implements UserService {
             user.setWithdrawTime(withdrawTime);
             userRepository.save(user);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원정보가 일치하지 않습니다. 이메일이나 비밀번호를 확인하세요");
+            throw new CustomException(Error.INVALID_LOGIN);
         }
     }
 
