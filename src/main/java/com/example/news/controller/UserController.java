@@ -38,6 +38,7 @@ public class UserController {
     public ResponseEntity<CommonResponse<UserResponseDto>> login(@Valid @RequestBody UserRequestDto dto,
                                                                  HttpServletRequest request) {
         UserResponseDto userResponseDto = userService.login(dto.getEmail(), dto.getPassword());
+
         User user = userService.findUserByEmail(dto.getEmail());
 
         HttpSession session = request.getSession();
@@ -59,7 +60,6 @@ public class UserController {
             return ResponseEntity.status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus())
                     .body(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS, "success"));
         } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
     }
 
     @PatchMapping
@@ -92,5 +92,4 @@ public class UserController {
         return ResponseEntity.status(SuccessCode.WITHDRAW_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.WITHDRAW_SUCCESS, "회원 탈퇴 완료"));
     }
-
 }

@@ -30,6 +30,8 @@ public class Board extends BaseEntity {
     @NotNull
     private User user;
 
+
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;

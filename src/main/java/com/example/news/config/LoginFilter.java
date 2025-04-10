@@ -31,7 +31,6 @@ public class LoginFilter implements Filter {
         }
         FilterChain chain = filterChain;
         chain.doFilter(servletRequest, servletResponse);
-        log.info("로그인 인증 성공");
 
     }
 
