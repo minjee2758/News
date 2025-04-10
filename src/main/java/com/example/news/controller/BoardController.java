@@ -1,12 +1,13 @@
 package com.example.news.controller;
 
 import com.example.news.common.ApiResponse;
+import com.example.news.common.CommonResponse;
+import com.example.news.common.SuccessCode;
 import com.example.news.dto.boardDto.BoardRequestDto;
 import com.example.news.dto.boardDto.BoardResponseDto;
 import com.example.news.entity.User;
 import com.example.news.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +38,10 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<ApiResponse<Void>> deleteBoard(
+    public ResponseEntity<CommonResponse<Void>> deleteBoard(
             @PathVariable Long boardId,
             @RequestParam Long userId) {
         boardService.deleteBoard(boardId, userId);
-        return ResponseEntity.noContent().build(); // 메시지 없음
+        return ResponseEntity.ok(CommonResponse.of(SuccessCode.DELETE_SUCCESS, null));
     }
-
-
 }

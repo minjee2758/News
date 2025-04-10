@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +29,8 @@ public class Board {
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     private User user;
+
+
 
     public void update(String title, String content) {
         this.title = title;

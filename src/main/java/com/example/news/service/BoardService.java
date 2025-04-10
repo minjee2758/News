@@ -1,6 +1,7 @@
 package com.example.news.service;
 
 import com.example.news.dto.boardDto.BoardResponseDto;
+import com.example.news.dto.friendDto.FriendBoardResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface BoardService {
 
     BoardResponseDto getBoardByUser(Long userId, Long boardId);
 
+    List<FriendBoardResponseDto> getFriendPosts(Long loginUserId, Long friendId);
 }
