@@ -16,12 +16,37 @@ public class CommonResponse<T> {
     private final T data;
     private final String comment;
 
-
+    //성공 처리
     public static <T> CommonResponse<T> of(SuccessCode code, T data) {
         return CommonResponse.<T>builder()
                 .code(code.getCode())
                 .data(data)
                 .comment(code.getMessage())
                 .build();
+    }
+
+    //에러 처리
+    public static <T> CommonResponse<T> from(Error error, T data) {
+        return CommonResponse.<T>builder()
+                .code(error.getCode())
+                .data(data)
+                .comment(error.getMessage())
+                .build();
+    }
+
+    @Getter
+    @Builder
+    public static class FieldError {
+        private String field;
+        private String value;
+        private String reason;
+
+        public static FieldError of(String field, String value, String reason) {
+            return FieldError.builder()
+                    .field(field)
+                    .value(value)
+                    .reason(reason)
+                    .build();
+        }
     }
 }
