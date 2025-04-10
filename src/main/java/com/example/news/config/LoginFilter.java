@@ -1,5 +1,7 @@
 package com.example.news.config;
 
+import com.example.news.common.CustomException;
+import com.example.news.common.Error;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +28,7 @@ public class LoginFilter implements Filter {
         if (!isWhiteList(requestURI)){
             HttpSession session = httpRequest.getSession(false);
             if (session == null || session.getAttribute("loginUser") == null){
-                throw new NotActiveException("로그인 해주세요");
+                throw new CustomException(Error.LOGIN_REQUIRED);
             }
         }
         FilterChain chain = filterChain;
