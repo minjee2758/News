@@ -3,6 +3,7 @@ package com.example.news.service;
 
 import com.example.news.common.CustomException;
 import com.example.news.common.Error;
+import com.example.news.dto.friendDto.FriendResponseDto;
 import com.example.news.dto.friendDto.FriendshipResponseDto;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.Friendship.Status;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,6 +116,36 @@ public class FriendshipServiceImpl implements FriendshipService {
                         friendship.getStatus()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FriendResponseDto> getFriendList(User loginUser) {
+
+        // 수정일 기준으로 내림차순
+        Sort sort = Sort.by(Sort.Direction.DESC, "modifiedAt");
+
+        // 내가 요청한 친구들 중 수락된 친구 관계들
+        List<Friendship> requesterList =
+                friendshipRepository.findAllByRequesterAndStatus(loginUser, Friendship.Status.ACCEPTED, sort);
+
+        // 내가 받은 요청 중 수락한 친구 관계들 
+        List<Friendship> receiverList =
+                friendshipRepository.findAllByReceiverAndStatus(loginUser, Friendship.Status.ACCEPTED, sort);
+
+        // 두 리스트 병합
+        List<Friendship> allFriends = new ArrayList<>();
+        allFriends.addAll(requesterList);
+        allFriends.addAll(receiverList);
+        
+        return allFriends.stream()
+                .map(friendship -> {
+                    User friend = friendship.getRequester().equals(loginUser)
+                            ? friendship.getReceiver()
+                            : friendship.getRequester();
+                    return new FriendResponseDto(friend.getId(), friend.getUsername(), friendship.getModifiedAt());
+                })
+                .collect(Collectors.toList());
+        
     }
 
     public List<FriendshipResponseDto> getReceivedFriendRequests(User loginUser) {

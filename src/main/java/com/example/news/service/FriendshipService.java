@@ -1,6 +1,7 @@
 package com.example.news.service;
 
 
+import com.example.news.dto.friendDto.FriendResponseDto;
 import com.example.news.dto.friendDto.FriendshipResponseDto;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
@@ -17,4 +18,6 @@ public interface FriendshipService {
     List<FriendshipResponseDto> getReceivedFriendRequests(User loginUser);
 
     List<FriendshipResponseDto> getSentFriendRequests(User loginUser);
+
+    List<FriendResponseDto> getFriendList(User loginUser);
 }
