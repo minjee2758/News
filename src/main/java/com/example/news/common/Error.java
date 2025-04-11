@@ -24,8 +24,9 @@ public enum Error {
     FRIENDSHIP_NOT_ACCEPTED(HttpStatus.FORBIDDEN, 403, "친구 관계가 수락되지 않았습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 게시글을 찾을 수 없습니다."),
-
-    ;
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 리소스를 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 댓글을 찾을 수 없습니다."),
+    COMMENT_NOT_IN_BOARD(HttpStatus.NOT_FOUND, 404, "댓글을 해당 게시글에서 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
