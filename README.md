@@ -57,5 +57,6 @@
 ![image](https://github.com/user-attachments/assets/2866695c-e53a-4b62-9876-1f377522a160)
 
 ### 🧾 API 명세서
-![image](https://github.com/user-attachments/assets/cd7557a8-8e12-4a34-8336-0fa723f640b4)
+![image](https://github.com/user-attachments/assets/986f0cdc-bb52-4520-8375-1bb98bf972a9)
+
 
