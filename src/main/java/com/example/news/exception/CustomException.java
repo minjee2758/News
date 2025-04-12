@@ -1,16 +1,16 @@
-package com.example.news.common;
+package com.example.news.exception;
 
 import lombok.Getter;
 
 @Getter
 public class  CustomException extends RuntimeException {
-    private final Error error;
+    private final FailCode error;
 
-    public CustomException(Error error) {
+    public CustomException(FailCode error) {
         super(error.getMessage());
         this.error = error;
     }
-    public CustomException(Error error, String message) {
+    public CustomException(FailCode error, String message) {
         super(message);
         this.error = error;
     }

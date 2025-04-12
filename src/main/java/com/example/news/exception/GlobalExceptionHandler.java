@@ -1,5 +1,6 @@
-package com.example.news.common;
+package com.example.news.exception;
 
+import com.example.news.common.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<CommonResponse> handleCustomException(CustomException e) {
         log.error("CustomException: {}", e.getMessage());
-        Error errorCode = e.getError();
+        FailCode errorCode = e.getError();
         CommonResponse response = CommonResponse.from(errorCode, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getHttpStatus().value()));
     }
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException: {}", e.getMessage());
         List<CommonResponse.FieldError> fieldErrors = processFieldErrors(e.getBindingResult());
-        CommonResponse response = CommonResponse.from(Error.INVALID_INPUT_VALUE, fieldErrors);
+        CommonResponse response = CommonResponse.from(FailCode.INVALID_INPUT_VALUE, fieldErrors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler {
                         constraintViolation.getMessage()
                 )
         ).collect(Collectors.toList());
-        CommonResponse response = CommonResponse.from(Error.INVALID_INPUT_VALUE, fieldErrors);
+        CommonResponse response = CommonResponse.from(FailCode.INVALID_INPUT_VALUE, fieldErrors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
