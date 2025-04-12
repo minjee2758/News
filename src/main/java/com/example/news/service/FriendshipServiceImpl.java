@@ -1,6 +1,9 @@
 package com.example.news.service;
 
 
+import com.example.news.common.CustomException;
+import com.example.news.common.Error;
+import com.example.news.dto.friendDto.FriendResponseDto;
 import com.example.news.dto.friendDto.FriendshipResponseDto;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.Friendship.Status;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +31,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     public FriendshipResponseDto sendFriendRequest(User loginUser, Long receiverId, Status status) {
 
         if (loginUser.getId().equals(receiverId)) {
-            throw new IllegalArgumentException("자기 자신에게 친구 요청을 보낼 수 없습니다.");
+            throw new CustomException(Error.INVALID_FRIEND_REQUEST);
         }
 
         // id를 통해 수신자 가져오기
@@ -38,7 +42,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         boolean exists = friendshipRepository.existsByRequesterAndReceiver(loginUser, receiver) || friendshipRepository.existsByRequesterAndReceiver(receiver, loginUser);
 
         if (exists) {
-            throw new IllegalStateException("이미 친구 요청을 보냈습니다.");
+            throw new CustomException(Error.ALREADY_REQUEST);
         }
 
         Friendship friendship = new Friendship(loginUser, receiver, status);
@@ -54,12 +58,12 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         // 유효한 상태값인지 확인
         if (status != Status.ACCEPTED && status != Status.REJECTED) {
-            throw new IllegalArgumentException("올바르지 않은 요청 상태입니다.");
+            throw new CustomException(Error.INVALID_REQUEST);
         }
 
         // 로그인한 사용자가 null이면 예외
         if (loginUser == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            throw new CustomException(Error.LOGIN_REQUIRED);
         }
 
         // 친구 요청을 한 사람 불러오기
@@ -67,13 +71,13 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         // 자기 자신에게 친구 수락/거절할 경우 예외 처리
         if (loginUser.getId().equals(requester.getId())) {
-            throw new IllegalArgumentException("자기 자신에게 친구 수락/거절을 할 수 없습니다.");
+            throw new CustomException(Error.INVALID_FRIEND_ACCEPT);
         }
 
         // 기존 친구 요청 가져오기
         Friendship friendship = friendshipRepository
                 .findByRequesterAndReceiver(requester, loginUser)
-                .orElseThrow(() -> new IllegalStateException("친구 요청이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(Error.NO_REQUEST));
 
         if (status == Status.REJECTED) {
             friendshipRepository.delete(friendship);
@@ -112,6 +116,36 @@ public class FriendshipServiceImpl implements FriendshipService {
                         friendship.getStatus()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FriendResponseDto> getFriendList(User loginUser) {
+
+        // 수정일 기준으로 내림차순
+        Sort sort = Sort.by(Sort.Direction.DESC, "modifiedAt");
+
+        // 내가 요청한 친구들 중 수락된 친구 관계들
+        List<Friendship> requesterList =
+                friendshipRepository.findAllByRequesterAndStatus(loginUser, Friendship.Status.ACCEPTED, sort);
+
+        // 내가 받은 요청 중 수락한 친구 관계들 
+        List<Friendship> receiverList =
+                friendshipRepository.findAllByReceiverAndStatus(loginUser, Friendship.Status.ACCEPTED, sort);
+
+        // 두 리스트 병합
+        List<Friendship> allFriends = new ArrayList<>();
+        allFriends.addAll(requesterList);
+        allFriends.addAll(receiverList);
+        
+        return allFriends.stream()
+                .map(friendship -> {
+                    User friend = friendship.getRequester().equals(loginUser)
+                            ? friendship.getReceiver()
+                            : friendship.getRequester();
+                    return new FriendResponseDto(friend.getId(), friend.getUsername(), friendship.getModifiedAt());
+                })
+                .collect(Collectors.toList());
+        
     }
 
     public List<FriendshipResponseDto> getReceivedFriendRequests(User loginUser) {

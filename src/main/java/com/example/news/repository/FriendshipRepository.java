@@ -1,6 +1,8 @@
 package com.example.news.repository;
 
 
+import com.example.news.common.CustomException;
+import com.example.news.common.Error;
 import com.example.news.entity.Board;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
@@ -20,7 +22,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
     Optional<Friendship> findByRequesterAndReceiver(User loginUser, User receiver);
 
     default Friendship findByRequesterAndReceiverOrElseThrow(User requester, User loginUser) {
-        return findByRequesterAndReceiver(requester, loginUser).orElseThrow(() -> new EntityNotFoundException("삭제할 친구를 찾을 수 없습니다."));
+        return findByRequesterAndReceiver(requester, loginUser).orElseThrow(() -> new CustomException(Error.USER_NOT_FOUND));
     }
 
     List<Friendship> findAllByReceiverAndStatus(User loginUser, Friendship.Status status , Sort sort);

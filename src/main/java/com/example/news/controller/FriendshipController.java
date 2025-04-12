@@ -5,6 +5,7 @@ import com.example.news.common.SuccessCode;
 import com.example.news.dto.friendDto.FriendBoardResponseDto;
 import com.example.news.dto.friendDto.FriendshipRequestDto;
 import com.example.news.dto.friendDto.FriendshipResponseDto;
+import com.example.news.dto.friendDto.FriendResponseDto;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
 import com.example.news.service.BoardService;
@@ -26,6 +27,16 @@ public class FriendshipController {
     private final FriendshipService friendshipService;
     private final BoardService boardService;
 
+    // 친구 목록 확인
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<FriendResponseDto>>> getFriendList(
+            HttpServletRequest request
+    ) {
+        User loginUser = (User) request.getSession().getAttribute("loginUser");
+        List<FriendResponseDto> friendList = friendshipService.getFriendList(loginUser);
+        return ResponseEntity.ok(CommonResponse.of(SuccessCode.FIND_SUCCESS, friendList));
+    }
+
     // 최근에 보낸 친구 요청 목록 확인
      @GetMapping("/requests/sent")
      public ResponseEntity<CommonResponse<List<FriendshipResponseDto>>> getSentFriendRequests(
@@ -45,9 +56,6 @@ public class FriendshipController {
         List<FriendshipResponseDto> receivedFriendRequests = friendshipService.getReceivedFriendRequests(loginUser);
         return ResponseEntity.ok(CommonResponse.of(SuccessCode.FIND_SUCCESS,receivedFriendRequests));
     }
-
-
-    // 친구 목록 확인
 
     // 친구의 포스팅 전체 조회 (최신순으로)
     @GetMapping("/{friendId}")
