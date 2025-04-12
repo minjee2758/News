@@ -1,10 +1,10 @@
-package com.example.news.common;
+package com.example.news.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum Error {
+public enum FailCode {
     INVALID_LOGIN(HttpStatus.UNAUTHORIZED, 401, "아이디 또는 비밀번호가 일치하지 않습니다."),
     REQUIRED_USER_EMAIL(HttpStatus.BAD_REQUEST, 400, "이메일 입력은 필수입니다."),
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, 400, "입력값이 잘못되었습니다"),
@@ -26,13 +26,19 @@ public enum Error {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 게시글을 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 리소스를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 댓글을 찾을 수 없습니다."),
-    COMMENT_NOT_IN_BOARD(HttpStatus.NOT_FOUND, 404, "댓글을 해당 게시글에서 찾을 수 없습니다.");
+    COMMENT_NOT_IN_BOARD(HttpStatus.NOT_FOUND, 404, "댓글을 해당 게시글에서 찾을 수 없습니다."),
+
+
+    SELF_LIKE_NOT_ALLOWED(HttpStatus.NOT_ACCEPTABLE, 406, "본인 게시물에는 좋아요를 누를 수 없습니다."),
+    ALREADY_LIKED_POST(HttpStatus.BAD_REQUEST, 400, "이미 좋아요를 누른 게시물입니다" ),
+    FAIL_POST_LIKE(HttpStatus.NOT_FOUND, 404, "좋아요 저장에 실패했습니다"),
+    NO_LIKE_POST(HttpStatus.BAD_REQUEST, 400, "좋아요를 누르지 않은 게시물입니다");
 
     private final HttpStatus httpStatus;
     private final int code;
     private final String message;
 
-    Error(HttpStatus httpStatus, int code, String message) {
+    FailCode(HttpStatus httpStatus, int code, String message) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;

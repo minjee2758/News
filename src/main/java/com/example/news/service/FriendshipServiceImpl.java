@@ -1,13 +1,12 @@
 package com.example.news.service;
 
-
-import com.example.news.common.CustomException;
-import com.example.news.common.Error;
 import com.example.news.dto.friendDto.FriendResponseDto;
 import com.example.news.dto.friendDto.FriendshipResponseDto;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.Friendship.Status;
 import com.example.news.entity.User;
+import com.example.news.exception.CustomException;
+import com.example.news.exception.FailCode;
 import com.example.news.repository.FriendshipRepository;
 import com.example.news.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     public FriendshipResponseDto sendFriendRequest(User loginUser, Long receiverId, Status status) {
 
         if (loginUser.getId().equals(receiverId)) {
-            throw new CustomException(Error.INVALID_FRIEND_REQUEST);
+            throw new CustomException(FailCode.INVALID_FRIEND_REQUEST);
         }
 
         // id를 통해 수신자 가져오기
@@ -42,7 +41,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         boolean exists = friendshipRepository.existsByRequesterAndReceiver(loginUser, receiver) || friendshipRepository.existsByRequesterAndReceiver(receiver, loginUser);
 
         if (exists) {
-            throw new CustomException(Error.ALREADY_REQUEST);
+            throw new CustomException(FailCode.ALREADY_REQUEST);
         }
 
         Friendship friendship = new Friendship(loginUser, receiver, status);
@@ -58,12 +57,12 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         // 유효한 상태값인지 확인
         if (status != Status.ACCEPTED && status != Status.REJECTED) {
-            throw new CustomException(Error.INVALID_REQUEST);
+            throw new CustomException(FailCode.INVALID_REQUEST);
         }
 
         // 로그인한 사용자가 null이면 예외
         if (loginUser == null) {
-            throw new CustomException(Error.LOGIN_REQUIRED);
+            throw new CustomException(FailCode.LOGIN_REQUIRED);
         }
 
         // 친구 요청을 한 사람 불러오기
@@ -71,13 +70,13 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         // 자기 자신에게 친구 수락/거절할 경우 예외 처리
         if (loginUser.getId().equals(requester.getId())) {
-            throw new CustomException(Error.INVALID_FRIEND_ACCEPT);
+            throw new CustomException(FailCode.INVALID_FRIEND_ACCEPT);
         }
 
         // 기존 친구 요청 가져오기
         Friendship friendship = friendshipRepository
                 .findByRequesterAndReceiver(requester, loginUser)
-                .orElseThrow(() -> new CustomException(Error.NO_REQUEST));
+                .orElseThrow(() -> new CustomException(FailCode.NO_REQUEST));
 
         if (status == Status.REJECTED) {
             friendshipRepository.delete(friendship);

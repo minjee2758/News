@@ -1,12 +1,12 @@
 package com.example.news.service;
 
-import com.example.news.common.CustomException;
-import com.example.news.common.Error;
 import com.example.news.dto.commentDto.CommentRequestDto;
 import com.example.news.dto.commentDto.CommentResponseDto;
 import com.example.news.entity.Board;
 import com.example.news.entity.Comment;
 import com.example.news.entity.User;
+import com.example.news.exception.CustomException;
+import com.example.news.exception.FailCode;
 import com.example.news.repository.BoardRepository;
 import com.example.news.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponseDto createBoardComment(User loginUser, Long boardId, String content) {
         if (loginUser == null ) {
-            throw new CustomException(Error.LOGIN_REQUIRED);
+            throw new CustomException(FailCode.LOGIN_REQUIRED);
         }
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.POST_NOT_FOUND));
 
         // content가 null이거나 공백만 있는 경우
         if (content == null || content.trim().isEmpty()) {
-            throw new CustomException(Error.RESOURCE_NOT_FOUND);
+            throw new CustomException(FailCode.RESOURCE_NOT_FOUND);
         }
 
         Comment comment = new Comment(content, board, loginUser);
@@ -56,15 +56,15 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDto updateBoardComment(User loginUser, Long boardId, Long commentId, String newContent) {
 
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.POST_NOT_FOUND));
 
         // 2. 댓글 조회
         Comment comment =commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(Error.COMMENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.COMMENT_NOT_FOUND));
 
         // 3. 댓글이 해당 게시글에 속해 있는지 확인
         if (!comment.getBoard().getId().equals(board.getId())) {
-            throw new CustomException(Error.COMMENT_NOT_IN_BOARD);
+            throw new CustomException(FailCode.COMMENT_NOT_IN_BOARD);
         }
 
         // 4. 수정 권한 확인: 댓글 작성자거나, 게시글 작성자면 댓글 내용 수정
@@ -72,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
         boolean isBoardOwner = board.getUser().equals(loginUser);
 
         if (!(isCommentOwner || isBoardOwner)) {
-            throw new CustomException(Error.ONLY_AUTHOR_CAN_MODIFY);
+            throw new CustomException(FailCode.ONLY_AUTHOR_CAN_MODIFY);
         }
 
         // 5. 댓글 내용 수정
@@ -83,15 +83,15 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 삭제
     public CommentResponseDto deleteBoardComment(User loginUser, Long boardId, Long commentId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.POST_NOT_FOUND));
 
         // 2. 댓글 조회
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(Error.COMMENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.COMMENT_NOT_FOUND));
 
         // 3. 댓글이 해당 게시글에 속해 있는지 확인
         if (!comment.getBoard().getId().equals(board.getId())) {
-            throw new CustomException(Error.COMMENT_NOT_IN_BOARD);
+            throw new CustomException(FailCode.COMMENT_NOT_IN_BOARD);
         }
 
         // 4. 수정 권한 확인: 댓글 작성자거나, 게시글 작성자면 댓글 내용 삭제 가능
@@ -99,7 +99,7 @@ public class CommentServiceImpl implements CommentService {
         boolean isBoardOwner = board.getUser().equals(loginUser);
 
         if (!(isCommentOwner || isBoardOwner)) {
-            throw new CustomException(Error.ONLY_AUTHOR_CAN_DELETE);
+            throw new CustomException(FailCode.ONLY_AUTHOR_CAN_DELETE);
         }
 
         // 5. 댓글 삭제
