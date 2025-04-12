@@ -1,11 +1,11 @@
-package com.example.news.common;
+package com.example.news.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum Error {
-    INVALID_LOGIN(HttpStatus.UNAUTHORIZED, 401, "아이디 또는 비밀번호가 일치하지 않습니다."),
+public enum FailCode {
+    INVALID_LOGIN(HttpStatus.UNAUTHORIZED, 401, "이메일 또는 비밀번호가 일치하지 않습니다."),
     REQUIRED_USER_EMAIL(HttpStatus.BAD_REQUEST, 400, "이메일 입력은 필수입니다."),
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, 400, "입력값이 잘못되었습니다"),
     UNCHANGED_PASSWORD(HttpStatus.FORBIDDEN, 403, "기존과 같은 비밀번호 입력입니다"),
@@ -25,13 +25,13 @@ public enum Error {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 게시글을 찾을 수 없습니다."),
 
-    ;
+    ALREADY_EXIST_USER(HttpStatus.CONFLICT, 409 ,"이미 존재하는 이메일입니다." );
 
     private final HttpStatus httpStatus;
     private final int code;
     private final String message;
 
-    Error(HttpStatus httpStatus, int code, String message) {
+    FailCode(HttpStatus httpStatus, int code, String message) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;

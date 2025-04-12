@@ -1,15 +1,13 @@
-package com.example.news.config;
+package com.example.news.filter;
 
-import com.example.news.common.CustomException;
-import com.example.news.common.Error;
+import com.example.news.exception.CustomException;
+import com.example.news.exception.FailCode;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.NotActiveException;
 
 @Slf4j
 public class LoginFilter implements Filter {
@@ -28,12 +26,11 @@ public class LoginFilter implements Filter {
         if (!isWhiteList(requestURI)){
             HttpSession session = httpRequest.getSession(false);
             if (session == null || session.getAttribute("loginUser") == null){
-                throw new CustomException(Error.LOGIN_REQUIRED);
+                throw new CustomException(FailCode.LOGIN_REQUIRED);
             }
         }
         FilterChain chain = filterChain;
         chain.doFilter(servletRequest, servletResponse);
-
     }
 
     public boolean isWhiteList(String requestURI) {

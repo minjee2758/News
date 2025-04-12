@@ -1,5 +1,6 @@
-package com.example.news.common;
+package com.example.news.exception;
 
+import com.example.news.common.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<CommonResponse> handleCustomException(CustomException e) {
         log.error("CustomException: {}", e.getMessage());
-        Error errorCode = e.getError();
-        CommonResponse response = CommonResponse.from(errorCode, e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getHttpStatus().value()));
+        FailCode failCode = e.getFailCode();
+        CommonResponse response = CommonResponse.from(failCode, e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(failCode.getHttpStatus().value()));
     }
 
     //@RequestBody에서 바인딩된 DTO의 @Vaild에서 오류가 생겼을때
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException: {}", e.getMessage());
         List<CommonResponse.FieldError> fieldErrors = processFieldErrors(e.getBindingResult());
-        CommonResponse response = CommonResponse.from(Error.INVALID_INPUT_VALUE, fieldErrors);
+        CommonResponse response = CommonResponse.from(FailCode.INVALID_INPUT_VALUE, fieldErrors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -46,10 +47,10 @@ public class GlobalExceptionHandler {
                         constraintViolation.getMessage()
                 )
         ).collect(Collectors.toList());
-        CommonResponse response = CommonResponse.from(Error.INVALID_INPUT_VALUE, fieldErrors);
+        CommonResponse response = CommonResponse.from(FailCode.INVALID_INPUT_VALUE, fieldErrors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
     }
+
     private List<CommonResponse.FieldError> processFieldErrors(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()
                 .map(error -> CommonResponse.FieldError.of(

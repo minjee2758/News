@@ -1,5 +1,6 @@
 package com.example.news.common;
 
+import com.example.news.exception.FailCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,11 +27,11 @@ public class CommonResponse<T> {
     }
 
     //에러 처리
-    public static <T> CommonResponse<T> from(Error error, T data) {
+    public static <T> CommonResponse<T> from(FailCode failCode, T data) {
         return CommonResponse.<T>builder()
-                .code(error.getCode())
+                .code(failCode.getCode())
                 .data(data)
-                .comment(error.getMessage())
+                .comment(failCode.getMessage())
                 .build();
     }
 

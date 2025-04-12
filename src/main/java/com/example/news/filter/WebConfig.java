@@ -1,4 +1,4 @@
-package com.example.news.config;
+package com.example.news.filter;
 
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

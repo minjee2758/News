@@ -1,12 +1,10 @@
 package com.example.news.repository;
 
 
-import com.example.news.common.CustomException;
-import com.example.news.common.Error;
-import com.example.news.entity.Board;
+import com.example.news.exception.CustomException;
+import com.example.news.exception.FailCode;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -22,7 +20,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
     Optional<Friendship> findByRequesterAndReceiver(User loginUser, User receiver);
 
     default Friendship findByRequesterAndReceiverOrElseThrow(User requester, User loginUser) {
-        return findByRequesterAndReceiver(requester, loginUser).orElseThrow(() -> new CustomException(Error.USER_NOT_FOUND));
+        return findByRequesterAndReceiver(requester, loginUser).orElseThrow(() -> new CustomException(FailCode.USER_NOT_FOUND));
     }
 
     List<Friendship> findAllByReceiverAndStatus(User loginUser, Friendship.Status status , Sort sort);
