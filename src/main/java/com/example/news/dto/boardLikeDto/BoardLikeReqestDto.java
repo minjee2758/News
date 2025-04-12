@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class BoardLikeReqestDto {
-    private final Long postId;
+    private final Long boardId;
 
-    public BoardLikeReqestDto(Long postId) {
-        this.postId = postId;
+    public BoardLikeReqestDto(Long boardId) {
+        this.boardId = boardId;
     }
 }

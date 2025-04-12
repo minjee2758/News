@@ -30,6 +30,8 @@ public class Board extends BaseEntity {
     @NotNull
     private User user;
 
+    private Long likeCount;
+
 
 
     public void update(String title, String content) {

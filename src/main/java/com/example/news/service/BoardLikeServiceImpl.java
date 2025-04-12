@@ -46,7 +46,6 @@ public class BoardLikeServiceImpl implements BoardLikeService {
     @Override
     public BoardLikeResponse boardLikeDelete(Long boardId, Long userId) {
         Board board = boardRepository.getBoardById(boardId);
-        Long boardWriter = board.getUser().getId();
 
         if (!boardLikeRepository.existsByUserIdAndBoardId(userId,boardId)) {
             throw new CustomException(FailCode.NO_LIKE_POST);

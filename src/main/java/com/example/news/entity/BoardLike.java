@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(name = "post_like")
+@Table(name = "board_like")
 public class BoardLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
