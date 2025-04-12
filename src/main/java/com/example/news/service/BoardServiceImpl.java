@@ -1,12 +1,12 @@
 package com.example.news.service;
 
-import com.example.news.common.CustomException;
-import com.example.news.common.Error;
 import com.example.news.dto.boardDto.BoardResponseDto;
 import com.example.news.dto.friendDto.FriendBoardResponseDto;
 import com.example.news.entity.Board;
 import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
+import com.example.news.exception.CustomException;
+import com.example.news.exception.FailCode;
 import com.example.news.repository.BoardRepository;
 import com.example.news.repository.FriendshipRepository;
 import com.example.news.repository.UserRepository;
@@ -53,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto updateBoard(Long boardId, String title, String content, Long userId) {
         Board board = getBoard(boardId);
         if (!board.getUser().getId().equals(userId)) {
-            throw new CustomException(Error.ONLY_AUTHOR_CAN_MODIFY);
+            throw new CustomException(FailCode.ONLY_AUTHOR_CAN_MODIFY);
         }
         board.update(title, content);
         return new BoardResponseDto(board);
@@ -64,7 +64,7 @@ public class BoardServiceImpl implements BoardService {
     public void deleteBoard(Long boardId, Long userId) {
         Board board = getBoard(boardId);
         if (!board.getUser().getId().equals(userId)) {
-            throw new CustomException(Error.ONLY_AUTHOR_CAN_DELETE);
+            throw new CustomException(FailCode.ONLY_AUTHOR_CAN_DELETE);
         }
         boardRepository.delete(board);
     }
@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto getBoardByUser(Long userId, Long boardId) {
         Board board = getBoard(boardId);
         if (!board.getUser().getId().equals(userId)) {
-            throw new CustomException(Error.NOT_USER_POST);
+            throw new CustomException(FailCode.NOT_USER_POST);
         }
         return new BoardResponseDto(board);
     }
@@ -97,13 +97,13 @@ public class BoardServiceImpl implements BoardService {
 
         // 친구 관계가 없거나 수락되지 않은 친구 관계라면 예외 처리
         if (friendship1.isEmpty() && friendship2.isEmpty()) {
-            throw new CustomException(Error.FRIENDSHIP_NOT_ACCEPTED);
+            throw new CustomException(FailCode.FRIENDSHIP_NOT_ACCEPTED);
         }
 
         Friendship friendship = friendship1.orElseGet(() -> friendship2.orElseThrow(() -> new IllegalStateException("친구 관계가 아닙니다.")));
 
         if (friendship.getStatus() != Friendship.Status.ACCEPTED) {
-            throw new CustomException(Error.FRIENDSHIP_NOT_ACCEPTED);
+            throw new CustomException(FailCode.FRIENDSHIP_NOT_ACCEPTED);
         }
 
         // 친구 게시물 가져오기 (최신순으로)
@@ -123,12 +123,12 @@ public class BoardServiceImpl implements BoardService {
 
     private User getUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(Error.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.USER_NOT_FOUND));
     }
 
     private Board getBoard(Long boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(FailCode.POST_NOT_FOUND));
     }
 
     @Override
