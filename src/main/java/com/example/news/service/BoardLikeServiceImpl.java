@@ -32,7 +32,7 @@ public class BoardLikeServiceImpl implements BoardLikeService {
             throw new CustomException(FailCode.SELF_LIKE_NOT_ALLOWED);
         }
         if (boardLikeRepository.existsByUserIdAndBoardId(userId,boardId)) {
-            throw new CustomException(FailCode.ALREADY_LIKED_POST, );
+            throw new CustomException(FailCode.ALREADY_LIKED_POST);
         }
 
         User user = userRepository.findById(userId).get();
@@ -41,6 +41,19 @@ public class BoardLikeServiceImpl implements BoardLikeService {
         boardLikeRepository.save(boardLike);
 
         return new BoardLikeResponse(boardLike.getUser().getId(), boardId);
+    }
 
+    @Override
+    public BoardLikeResponse boardLikeDelete(Long boardId, Long userId) {
+        Board board = boardRepository.getBoardById(boardId);
+        Long boardWriter = board.getUser().getId();
+
+        if (!boardLikeRepository.existsByUserIdAndBoardId(userId,boardId)) {
+            throw new CustomException(FailCode.NO_LIKE_POST);
+        }
+        User user = userRepository.findById(userId).get();
+        BoardLike boardLike = boardLikeRepository.findByUserIdAndBoardId(user.getId(), boardId);
+        boardLikeRepository.delete(boardLike);
+        return new BoardLikeResponse(boardLike.getUser().getId(), boardId);
     }
 }

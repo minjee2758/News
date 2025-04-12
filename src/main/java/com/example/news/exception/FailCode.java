@@ -31,7 +31,8 @@ public enum FailCode {
 
     SELF_LIKE_NOT_ALLOWED(HttpStatus.NOT_ACCEPTABLE, 406, "본인 게시물에는 좋아요를 누를 수 없습니다."),
     ALREADY_LIKED_POST(HttpStatus.BAD_REQUEST, 400, "이미 좋아요를 누른 게시물입니다" ),
-    FAIL_POST_LIKE(HttpStatus.NOT_FOUND, 404, "좋아요 저장에 실패했습니다");
+    FAIL_POST_LIKE(HttpStatus.NOT_FOUND, 404, "좋아요 저장에 실패했습니다"),
+    NO_LIKE_POST(HttpStatus.BAD_REQUEST, 400, "좋아요를 누르지 않은 게시물입니다");
 
     private final HttpStatus httpStatus;
     private final int code;

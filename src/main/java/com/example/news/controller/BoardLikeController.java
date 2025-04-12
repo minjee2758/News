@@ -9,6 +9,7 @@ import com.example.news.service.BoardLikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,15 @@ public class BoardLikeController {
         return ResponseEntity.status(SuccessCode.LIKE_SUCCESS.getHttpStatus())
                 .body(CommonResponse.of(SuccessCode.LIKE_SUCCESS, boardLikeResponse));
 
+    }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<CommonResponse<BoardLikeResponse>> deleteBoardLike
+            (@PathVariable Long boardId, HttpServletRequest request) {
+
+        User loginUser = (User) request.getSession().getAttribute("loginUser");
+        BoardLikeResponse boardLikeResponse = boardLikeService.boardLikeDelete(boardId, loginUser.getId());
+
+        return new ResponseEntity<>(CommonResponse.of(SuccessCode.LIKE_DELETE_SUCCESS, boardLikeResponse), HttpStatus.OK);
     }
 }
