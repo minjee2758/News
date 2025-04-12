@@ -26,7 +26,13 @@ public enum FailCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 게시글을 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 리소스를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 댓글을 찾을 수 없습니다."),
-    COMMENT_NOT_IN_BOARD(HttpStatus.NOT_FOUND, 404, "댓글을 해당 게시글에서 찾을 수 없습니다.");
+    COMMENT_NOT_IN_BOARD(HttpStatus.NOT_FOUND, 404, "댓글을 해당 게시글에서 찾을 수 없습니다."),
+
+
+    SELF_LIKE_NOT_ALLOWED(HttpStatus.NOT_ACCEPTABLE, 406, "본인 게시물에는 좋아요를 누를 수 없습니다."),
+    ALREADY_LIKED_POST(HttpStatus.BAD_REQUEST, 400, "이미 좋아요를 누른 게시물입니다" ),
+    FAIL_POST_LIKE(HttpStatus.NOT_FOUND, 404, "좋아요 저장에 실패했습니다"),
+    NO_LIKE_POST(HttpStatus.BAD_REQUEST, 400, "좋아요를 누르지 않은 게시물입니다");
 
     private final HttpStatus httpStatus;
     private final int code;

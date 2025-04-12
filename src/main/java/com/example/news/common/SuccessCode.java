@@ -20,9 +20,12 @@ public enum SuccessCode {
     ACCEPT_FRIEND_SUCCESS(HttpStatus.OK, 200, "친구 수락이 완료되었습니다."),
     REJECT_FRIEND_SUCCESS(HttpStatus.OK, 200, "친구 거절이 완료되었습니다."),
     CREATE_COMMENT_SUCCESS(HttpStatus.OK, 200, "댓글 생성이 완료되었습니다."),
-    UPDATE_COMMENT_SUCCESS(HttpStatus.OK, 200, "댓글 수정이 완료되었습니다.")
+    UPDATE_COMMENT_SUCCESS(HttpStatus.OK, 200, "댓글 수정이 완료되었습니다."),
 
-    ;
+    LIKE_SUCCESS(HttpStatus.OK, 200, "좋아요가 반영되었습니다"),
+    LIKE_DELETE_SUCCESS(HttpStatus.NO_CONTENT, 204, "좋아요 삭제되었습니다");
+
+
     private final HttpStatus httpStatus;
     private final int code;
     private final String message;

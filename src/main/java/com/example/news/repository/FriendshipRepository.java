@@ -9,10 +9,12 @@ import com.example.news.exception.FailCode;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     // FriendshipRepository에 친구 관계(보류 포함)가 존재하는지 확인

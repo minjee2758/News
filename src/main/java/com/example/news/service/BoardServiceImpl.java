@@ -7,6 +7,7 @@ import com.example.news.entity.Friendship;
 import com.example.news.entity.User;
 import com.example.news.exception.CustomException;
 import com.example.news.exception.FailCode;
+import com.example.news.repository.BoardLikeRepository;
 import com.example.news.repository.BoardRepository;
 import com.example.news.repository.FriendshipRepository;
 import com.example.news.repository.UserRepository;
@@ -35,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     @Override
     @Transactional
@@ -45,6 +47,7 @@ public class BoardServiceImpl implements BoardService {
                 .content(content)
                 .user(user)
                 .build();
+
         return new BoardResponseDto(boardRepository.save(board));
     }
 
@@ -56,7 +59,8 @@ public class BoardServiceImpl implements BoardService {
             throw new CustomException(FailCode.ONLY_AUTHOR_CAN_MODIFY);
         }
         board.update(title, content);
-        return new BoardResponseDto(board);
+        int likeCount = boardLikeRepository.countByBoardId(boardId);
+        return new BoardResponseDto(board, likeCount);
     }
 
     @Override
@@ -73,7 +77,10 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> getBoardsByUser(Long userId) {
         User user = getUser(userId);
         return boardRepository.findAllByUser(user).stream()
-                .map(BoardResponseDto::new)
+                .map(board -> {
+                    int likeCount = boardLikeRepository.countByBoardId(board.getId());
+                    return new BoardResponseDto(board, likeCount);
+                })
                 .toList();
     }
 
@@ -83,7 +90,8 @@ public class BoardServiceImpl implements BoardService {
         if (!board.getUser().getId().equals(userId)) {
             throw new CustomException(FailCode.NOT_USER_POST);
         }
-        return new BoardResponseDto(board);
+        int likeCount = boardLikeRepository.countByBoardId(boardId);
+        return new BoardResponseDto(board, likeCount);
     }
 
     @Override
@@ -116,7 +124,8 @@ public class BoardServiceImpl implements BoardService {
                         board.getId(),
                         board.getTitle(),
                         board.getContent(),
-                        board.getCreatedAt()
+                        board.getCreatedAt(),
+                        boardLikeRepository.countByBoardId(board.getId())
                 ))
                 .collect(Collectors.toList());
     }
@@ -146,7 +155,7 @@ public class BoardServiceImpl implements BoardService {
 
         // Repository 에서 페이징된 게시글을 가져오고 Dto로 변환
         return boardRepository.findAllByOrderByCreatedAtDesc(pageable)
-                .map(BoardResponseDto::new);
+                .map(board -> new BoardResponseDto(board, boardLikeRepository.countByBoardId(board.getId())));
     }
     //PageRequest.of(page, size, sort)로 페이징 설정
     //map(BoardResponseDto::new)로 엔티티를 DTO로 변환
