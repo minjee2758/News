@@ -4,6 +4,85 @@
 
 ---
 
+## 개발자
+윤경모 : 팀장, 친구 관리 기능 및 댓글 기능 구현
+배재훈 : 게시물 관리 기능과 페이지네이션(게시물 10개씩 조회) 구현
+이귀현 : 회원가입 기능 구현
+임민지 : 회원 관리 기능 및 로그인 필터, 좋아요, 공통 응답 기능 구현
+
+## 폴더 구조
+``` src                                                   
+├─ main                                               
+│  ├─ java                                            
+│  │  └─ com                                          
+│  │     └─ example                                   
+│  │        └─ news                                   
+│  │           ├─ common                              
+│  │           │  ├─ ApiResponse.java                 
+│  │           │  ├─ CommonResponse.java              
+│  │           │  ├─ CustomException.java             
+│  │           │  ├─ Error.java                       
+│  │           │  ├─ GlobalExceptionHandler.java      
+│  │           │  └─ SuccessCode.java                 
+│  │           ├─ config                              
+│  │           │  ├─ LoginFilter.java                 
+│  │           │  ├─ PasswordEncoder.java             
+│  │           │  └─ WebConfig.java                   
+│  │           ├─ controller                          
+│  │           │  ├─ BoardController.java             
+│  │           │  ├─ CommentController.java           
+│  │           │  ├─ FriendshipController.java        
+│  │           │  ├─ UserBoardController.java         
+│  │           │  └─ UserController.java              
+│  │           ├─ dto                                 
+│  │           │  ├─ boardDto                         
+│  │           │  │  ├─ BoardRequestDto.java          
+│  │           │  │  └─ BoardResponseDto.java         
+│  │           │  ├─ commentDto                       
+│  │           │  │  ├─ CommentRequestDto.java        
+│  │           │  │  └─ CommentResponseDto.java       
+│  │           │  ├─ friendDto                        
+│  │           │  │  ├─ FriendBoardResponseDto.java   
+│  │           │  │  ├─ FriendResponseDto.java        
+│  │           │  │  ├─ FriendshipRequestDto.java     
+│  │           │  │  └─ FriendshipResponseDto.java    
+│  │           │  └─ userDto                          
+│  │           │     ├─ UpdatePwResponseDto.java      
+│  │           │     ├─ UserRequestDto.java           
+│  │           │     ├─ UserResponseDto.java          
+│  │           │     └─ UserWithdrawResponseDto.java  
+│  │           ├─ entity                              
+│  │           │  ├─ BaseEntity.java                  
+│  │           │  ├─ Board.java                       
+│  │           │  ├─ Comment.java                     
+│  │           │  ├─ Friendship.java                  
+│  │           │  └─ User.java                        
+│  │           ├─ repository                          
+│  │           │  ├─ BoardRepository.java             
+│  │           │  ├─ CommentRepository.java           
+│  │           │  ├─ FriendshipRepository.java        
+│  │           │  └─ UserRepository.java              
+│  │           ├─ service                             
+│  │           │  ├─ BoardService.java                
+│  │           │  ├─ BoardServiceImpl.java            
+│  │           │  ├─ CommentService.java              
+│  │           │  ├─ CommentServiceImpl.java          
+│  │           │  ├─ FriendshipService.java           
+│  │           │  ├─ FriendshipServiceImpl.java       
+│  │           │  ├─ UserService.java                 
+│  │           │  └─ UserServiceImpl.java             
+│  │           ├─ NewsApplication.java                
+│  │           └─ Test.java                           
+│  └─ resources                                       
+│     └─ application.properties                       
+└─ test                                               
+   └─ java                                            
+      └─ com                                          
+         └─ example                                   
+            └─ news                                   
+               └─ NewsApplicationTests.java ```
+
+
 ## 🛠️ 기술 스택
 
 - **Backend**: Spring Boot, Spring Web, Spring Data JPA, Lombok 
