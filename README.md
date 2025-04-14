@@ -6,12 +6,16 @@
 
 ## 개발자
 윤경모 : 팀장, 친구 관리 기능 및 댓글 기능 구현
+
 배재훈 : 게시물 관리 기능과 페이지네이션(게시물 10개씩 조회) 구현
+
 이귀현 : 회원가입 기능 구현
+
 임민지 : 회원 관리 기능 및 로그인 필터, 좋아요, 공통 응답 기능 구현
 
 ## 폴더 구조
-``` src                                                   
+```
+src                                                   
 ├─ main                                               
 │  ├─ java                                            
 │  │  └─ com                                          
@@ -80,7 +84,8 @@
       └─ com                                          
          └─ example                                   
             └─ news                                   
-               └─ NewsApplicationTests.java ```
+               └─ NewsApplicationTests.java
+```
 
 
 ## 🛠️ 기술 스택
